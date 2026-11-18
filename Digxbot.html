@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DigX Voice Bot | AI Voice Agents for Customer Experience | ICCS DigX</title>
+  <meta name="description" content="DigX Voice Bot by ICCS: AI voice agents that answer, call, qualify, collect and resolve in English, Hindi and multiple Indian languages. Built on ICCS customer experience expertise. Book a demo.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://iccsdigx.com/tech-and-innovation/digx-voice-bot">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DigX Voice Bot | AI Voice Agents for Customer Experience | ICCS DigX">
+  <meta property="og:description" content="Every call answered. Every customer heard. Discover DigX Voice Bot by ICCS.">
+  <meta property="og:url" content="https://iccsdigx.com/tech-and-innovation/digx-voice-bot">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#faf9f7">
+  <link rel="stylesheet" href="digx-bot.css">
+  <script src="digx-bot.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav" id="nav">
+    <a class="logo" href="#home" aria-label="ICCS DigX Voice Bot home">
+      <img src="https://iccsdigx.com/logo.png" alt="ICCS" width="118" height="34" data-logo>
+      <span class="logo-fallback" hidden>ICCS</span><small>DigX Voice Bot</small>
+    </a>
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+    <nav id="menu" aria-label="Main navigation">
+      <a href="#journey">Use cases</a><a href="#how">How it works</a><a href="#industries">Industries</a><a href="#quality">Quality</a><a href="#demo">Live demo</a>
+      <a class="btn btn-sm" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Book a demo</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> DigX Voice Bot · Part of the DigX Verse</p>
+        <h1>Every Call Answered. Every Customer Heard. <span>The Voice of Smarter CX.</span></h1>
+        <p class="lede">DigX Voice Bot is an AI voice agent designed to answer, call, qualify, collect and resolve around the clock, in your customers' language. Built by ICCS, with deep customer conversation and contact-centre experience.</p>
+        <div class="hero-actions"><a class="btn" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Book A Demo</a><a class="btn btn-ghost" href="#demo">Hear It Live <span aria-hidden="true">▶</span></a></div>
+        <div class="hero-chips"><span>24/7 conversations</span><span>Human + AI approach</span><span>Designed for Indian languages</span></div>
+      </div>
+      <div class="hero-visual" aria-label="Illustration of a voice conversation">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="voice-card transcript"><span class="mini-label">LIVE TRANSCRIPT · SAMPLE</span><p class="bubble">Hello! How can I help you today?</p><p class="bubble user-bubble">I'd like to check my order.</p><p class="bubble">Absolutely. Let me help you with that.</p></div>
+        <div class="voice-core"><div class="sound-icon">♫</div><div class="wave" data-n="25"></div><strong>DigX Voice Bot</strong><small>Voice experience concept</small></div>
+        <div class="voice-card summary"><span class="mini-label">CALL SUMMARY</span><strong>Customer query</strong><div class="summary-line"></div><div class="summary-line short"></div><span class="status">● Illustrative sample</span></div>
+      </div>
+    </section>
+
+
+    <!-- LIVE DEMO CALL REQUEST -->
+<section class="demo-call-section" id="live-demo-call">
+  <div class="demo-call-content">
+
+    <span class="demo-call-eyebrow">EXPERIENCE DIGX VOICE BOT</span>
+
+    <h2>Want to Hear Our Voice Bot in Action?</h2>
+
+    <p>
+      Enter your phone number and let DigX Voice Bot call you
+      for a personalised demo.
+    </p>
+
+    <form class="call-form" id="callRequestForm" novalidate>
+      <div class="call-form-main">
+
+        <label class="sr-only" for="countryCode">Country code</label>
+        <select id="countryCode" name="country_code">
+          <option value="+91" selected>+91 · IN</option>
+          <option value="+1">+1 · US</option>
+          <option value="+44">+44 · GB</option>
+          <option value="+971">+971 · AE</option>
+          <option value="+65">+65 · SG</option>
+          <option value="+61">+61 · AU</option>
+        </select>
+
+        <label class="sr-only" for="phoneNumber">Phone number</label>
+        <input
+          id="phoneNumber"
+          name="phone_number"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel-national"
+          placeholder="Enter your phone number"
+          maxlength="18"
+          required
+        >
+
+        <button class="call-submit" id="callSubmit" type="submit">
+          <span class="call-icon">☎</span>
+          <span class="call-button-text">Call Me for a Demo</span>
+        </button>
+
+      </div>
+
+      <label class="call-consent" for="callConsent">
+        <input id="callConsent" name="consent" type="checkbox" required>
+        <span>I agree to receive an automated demo call from ICCS DigX.</span>
+      </label>
+
+      <p class="call-feedback" id="callFeedback" aria-live="polite"></p>
+
+      <p class="call-privacy">
+        Your number will be used to process your demo-call request.
+      </p>
+    </form>
+
+  </div>
+</section>
+
+    <section class="trust section" aria-label="Industries served">
+      <p class="eyebrow">CX experience across industries</p><h2>Loved by brands that put customers first</h2>
+      <div class="industry-rail"><span>BFSI</span><span>Healthcare</span><span>E-commerce</span><span>Telecom</span><span>Automotive</span></div>
+      <p class="muted center">Backed by 20+ years of ICCS contact-centre expertise and [6,000+] CX professionals.</p>
+    </section>
+
+    <section class="section section-tint" id="journey">
+      <div class="section-heading"><p class="eyebrow">One platform · Multiple outcomes</p><h2>One Voice. Every Stage of the Customer Journey.</h2><p>From customer engagement to successful payments, voice automation can turn every conversation into business momentum.</p></div>
+      <div class="tabs journey-tabs" role="tablist" aria-label="Customer journey stages">
+        <button class="tab active" role="tab" aria-selected="true" data-journey="acquire">Acquire</button><button class="tab" role="tab" aria-selected="false" data-journey="engage">Engage</button><button class="tab" role="tab" aria-selected="false" data-journey="support">Support</button><button class="tab" role="tab" aria-selected="false" data-journey="recover">Recover</button>
+      </div>
+      <div class="journey-panel" id="journeyPanel" aria-live="polite"></div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="section-heading"><p class="eyebrow">The conversation engine</p><h2>Listens Like a Person. Thinks Like Your Best Agent.</h2><p>A voice automation experience can combine speech, language understanding and connected business workflows in one conversation.</p></div>
+      <div class="process-grid">
+        <article class="process-card"><span>01</span><div class="process-icon">◖</div><h3>Listen</h3><p>Capture speech and understand the words being spoken, including accents and natural conversation patterns.</p></article>
+        <article class="process-card"><span>02</span><div class="process-icon">✧</div><h3>Understand</h3><p>Interpret the customer's intent and conversation context using configured knowledge and business rules.</p></article>
+        <article class="process-card"><span>03</span><div class="process-icon">⌘</div><h3>Act</h3><p>Connect to approved systems and workflows to retrieve information or trigger the next step.</p></article>
+        <article class="process-card"><span>04</span><div class="process-icon">♫</div><h3>Speak</h3><p>Respond with natural-sounding speech and maintain a clear, helpful conversation.</p></article>
+        <article class="process-card"><span>05</span><div class="process-icon">↗</div><h3>Improve</h3><p>Review call outcomes and quality insights to identify opportunities for ongoing optimisation.</p></article>
+      </div>
+      <p class="fineprint">These are illustrative capability stages, not a confirmed technical architecture. Final functionality depends on the approved solution design.</p>
+    </section>
+
+    <section class="section section-dark" id="difference">
+      <div class="dark-grid"><div><p class="eyebrow light">The ICCS difference</p><h2>Built by CX Operators, Not Just Engineers.</h2><p>Voice experiences work best when technology understands the reality of customer conversations. ICCS brings customer experience operations knowledge together with digital innovation.</p><a class="text-link" href="https://iccsdigx.com/about-us" target="_blank" rel="noopener">Discover ICCS <span>↗</span></a></div>
+        <div class="difference-list"><article><b>01</b><div><h3>Human + AI approach</h3><p>Design for smooth escalation to a human team when a conversation needs personal attention.</p></div></article><article><b>02</b><div><h3>Customer-first conversations</h3><p>Conversation flows should reflect customer needs, business context and approved communication guidelines.</p></div></article><article><b>03</b><div><h3>Operational mindset</h3><p>Plan for monitoring, quality reviews and continuous improvement—not just initial setup.</p></div></article></div>
+      </div>
+    </section>
+
+    <section class="section" id="languages">
+      <div class="section-heading"><p class="eyebrow">Language is connection</p><h2>Fluent in India. Ready for the World.</h2><p>Your customers don&#39;t speak in one language, and neither does DigX Voice Bot. It switches
+        naturally between English, Hindi and regional languages, even in the middle of a sentence.</p></div>
+      <div class="language-cloud"><span>English</span><span>Hindi</span><span>Hinglish</span><span>Tamil</span><span>Telugu</span><span>Kannada</span><span>Malayalam</span><span>Marathi</span><span>Bengali</span><span>Gujarati</span><span>Punjabi</span><span class="more-language">More languages</span></div>
+      <p class="fineprint center">Choose from [X] voices, or create a custom brand voice that sounds like you.</p>
+    </section>
+
+    <section class="section section-tint" id="quality">
+      <div class="section-heading"><p class="eyebrow">Every Call, Quality-Checked</p><h2>100% Call Quality Monitoring. Zero Sampling.</h2><p>Powered by DigX Verse quality management, it automatically transcribes, scores and analyses
+        every conversation to uncover insights and improve every next interaction.</p></div>
+      <div class="quality-layout"><div class="quality-score"><div class="score-top"><span>CONVERSATION REVIEW</span><span class="score-pill">Illustrative</span></div><div class="score-number">Call <b>Insights</b></div><div class="score-row"><span>Resolution</span><b>Reviewed</b></div><div class="score-row"><span>Sentiment</span><b>Analysed</b></div><div class="score-row"><span>Compliance</span><b>Checked</b></div><div class="score-row"><span>Answer accuracy</span><b>Evaluated</b></div><div class="insight">Suggested improvement: make the opening greeting shorter.</div></div>
+        <div class="quality-features"><article><h3>Conversation dashboards</h3><p>Track relevant measures such as call volume, containment, conversion and customer feedback where configured.</p></article><article><h3>Quality and compliance reviews</h3><p>Review conversations against approved scripts, disclosures and quality scorecards.</p></article><article><h3>Searchable conversation records</h3><p>Use transcripts and recordings where enabled and permitted by the applicable consent and retention policies.</p></article><article><h3>Alerts and escalation insights</h3><p>Identify conversations that may need human attention or further review.</p></article></div></div>
+    </section>
+
+    <section class="section" id="integrations">
+      <div class="section-heading"><p class="eyebrow">Plugs Into Your Stack</p><h2>Works With the Tools You Already Use.</h2><p>DigX Voice Bot connects to your CRM, telephony, ticketing and payment systems out of the box,
+        or through open APIs and webhooks.</p></div>
+      <div class="integration-grid"><div>CRM platforms<small>Customer records · Lead updates</small></div><div>Helpdesk tools<small>Tickets · Conversation context</small></div><div>WhatsApp Business<small>Follow-ups · Links · Documents</small></div><div>Payment systems<small>Payment links · Status</small></div><div>Calendars<small>Appointments · Scheduling</small></div><div>Telephony platforms<small>Calling · Routing · SIP</small></div><div>Commerce systems<small>Orders · Delivery status</small></div><div>APIs & webhooks<small>Custom workflows</small></div></div>
+      <p class="fineprint center">Examples are indicative only; no specific integration is represented as currently available.</p>
+    </section>
+
+    <section class="section section-tint" id="industries">
+      <div class="section-heading"><p class="eyebrow">Industries</p><h2>Expertise That Runs Deep in Your Industry</h2><p>Explore example workflows that can be tailored to different customer journeys.</p></div>
+      <div class="industry-grid"><article><span>◈</span><h3>BFSI</h3><p>Loan enquiries, customer activation, payment reminders and service requests.</p></article><article><span>⌂</span><h3>Insurance</h3><p>Renewal reminders, claim-status enquiries and policy-related assistance.</p></article><article><span>✚</span><h3>Healthcare</h3><p>Appointment scheduling, reminders and patient follow-ups.</p></article><article><span>▣</span><h3>E-commerce & Retail</h3><p>Order updates, delivery confirmation, returns and customer feedback.</p></article><article><span>⌁</span><h3>Telecom & Utilities</h3><p>Plan information, billing enquiries and service notifications.</p></article><article><span>◇</span><h3>Automotive</h3><p>Test-drive enquiries, service reminders and feedback collection.</p></article><article><span>▤</span><h3>Education</h3><p>Admission enquiries, counselling coordination and fee reminders.</p></article><article><span>✈</span><h3>Travel & Hospitality</h3><p>Booking support, itinerary updates and reservation enquiries.</p></article></div>
+    </section>
+
+    <section class="section" id="security">
+      <div class="section-heading"><p class="eyebrow">Security and Deployment</p><h2> Enterprise-Grade Security, Built In.</h2><p>Your customers trust you with their data, and you can trust us with it. DigX Voice Bot is built to
+        meet the standards of India&#39;s most regulated industries.</p></div>
+      <div class="security-grid"><article><h3>Data protection</h3><p>Define encryption, access controls, retention and personal-data handling for the deployment.</p></article><article><h3>Governance</h3><p>Establish consent, auditability, role-based access and escalation policies.</p></article><article><h3>Deployment options</h3><p>Evaluate the hosting and network model that fits your technical and regulatory requirements.</p></article></div>
+      <p class="fineprint">No ISO, SOC 2, PCI DSS, HIPAA, DPDP or hosting certification claim is made on this prototype. Display only independently verified, currently applicable claims.</p>
+    </section>
+
+    <section class="section section-tint" id="demo">
+      <div class="section-heading"><p class="eyebrow">Experience a sample conversation</p><h2>Smarter Business and Better CX Starts Here.</h2><p>Let&#39;s turn every customer conversation into an outcome. Hear what DigX Voice Bot can do for
+        your business.</p></div>
+      <div class="demo-wrap"><div class="demo-controls"><div class="demo-label">CHOOSE A SAMPLE</div><div class="tabs demo-tabs" id="demoTabs" role="tablist" aria-label="Demo scenario"></div><div class="wave" id="demoWave" data-n="30"></div><div class="demo-actions"><button class="btn" id="playBtn" type="button">Play sample conversation</button><button class="btn btn-ghost" id="stopBtn" type="button">Stop</button></div><p class="fineprint">Audio uses your browser's speech synthesis when available.</p></div><div class="conversation" id="conversation" aria-live="polite"><div class="conversation-empty">Choose a scenario and play the sample conversation.</div></div></div>
+    </section>
+
+    <section class="section faq-section" id="faq">
+      <div class="section-heading"><p class="eyebrow">Questions, answered</p><h2>Frequently Asked Questions.</h2></div>
+      <div class="faq-list">
+        <details><summary>What is DigX Voice Bot?</summary><p>DigX Voice Bot is an AI voice-agent concept from ICCS DigX, designed to support natural phone conversations for customer enquiries, reminders, lead qualification and service workflows. Final capabilities depend on the configured solution.</p></details>
+        <details><summary>How is it different from a traditional IVR?</summary><p>A conversational voice agent is designed to understand spoken requests and respond in context, rather than relying only on fixed keypad menus. Available actions depend on connected systems and approved workflows.</p></details>
+        <details><summary>Will customers know they are speaking to AI?</summary><p>Customer-facing experiences should be transparent about the use of an automated assistant and provide an appropriate path to human support.</p></details>
+        <details><summary>What happens if the bot cannot help?</summary><p>A solution can be designed to route selected conversations to a human team, with relevant context passed along where the integration supports it.</p></details>
+        <details><summary>Which languages are supported?</summary><p>Language and voice availability must be confirmed for the specific product configuration and deployment.</p></details>
+        <details><summary>How long does implementation take?</summary><p>Timelines depend on use cases, integrations, security reviews, testing and deployment requirements. ICCS can confirm a realistic plan after discovery.</p></details>
+        <details><summary>Can we try it before committing?</summary><p>Yes. Contact ICCS to discuss a product demonstration and whether a pilot is suitable for your use case.</p></details>
+      </div>
+    </section>
+
+    <section class="closing-cta" id="contact"><p class="eyebrow light">Start a smarter conversation</p><h2>Smarter Business and Better CX Starts Here.</h2><p>Let's explore how DigX Voice Bot can turn customer conversations into meaningful outcomes.</p><div class="hero-actions"><a class="btn btn-white" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Book A Demo</a><a class="btn btn-outline-white" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Connect With Us</a></div></section>
+  </main>
+
+  
+  <footer class="footer"><div class="footer-brand"><a class="logo" href="#home"><img src="https://iccsdigx.com/logo.png" alt="ICCS" width="118" height="34" data-logo><span class="logo-fallback" hidden>ICCS</span><small>DigX Voice Bot</small></a><p>AI-powered customer experience innovation from ICCS DigX.</p></div><div><h3>Explore</h3><a href="#journey">Use cases</a><a href="#how">How it works</a><a href="#industries">Industries</a><a href="#demo">Try the demo</a></div><div><h3>ICCS</h3><a href="https://iccsdigx.com/about-us" target="_blank" rel="noopener">About us</a><a href="https://iccsdigx.com/tech-and-innovation" target="_blank" rel="noopener">Tech & Innovation</a><a href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Contact us</a></div><div><h3>Legal</h3><a href="https://iccsdigx.com/privacy-policy" target="_blank" rel="noopener">Privacy policy</a><a href="https://iccsdigx.com/legal-statement" target="_blank" rel="noopener">Legal statement</a></div><p class="copyright">© 2026 ICCS. All rights reserved.</p></footer>
+
+  <link rel="stylesheet" href="digx-bot.css">
+  <link rel="stylesheet" href="digx-bot-iccs.css">   <!-- add, after digx-bot.css -->
+  <script src="digx-bot.js" defer></script>
+  <body class="dgx">                                 <!-- add class -->
+</body>
+</html>
