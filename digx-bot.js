@@ -1,155 +1,429 @@
+/* DigX Voice Bot site interactions — vanilla JavaScript only. */
 (() => {
   'use strict';
-  const $ = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.documentElement.classList.add('js');
 
-  // Logo fallback
-  $$('[data-logo]').forEach(img => {
-    const fallback = img.nextElementSibling;
-    const fail = () => { img.hidden = true; if (fallback) fallback.hidden = false; };
-    img.addEventListener('error', fail, { once: true });
-    if (img.complete && !img.naturalWidth) fail();
-  });
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
   // Mobile navigation
-  const burger = $('#burger'), menu = $('#menu');
+  const burger = $('#burger');
+  const menu = $('#menu');
+  const closeMenu = () => {
+    if (!burger || !menu) return;
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Open menu');
+    menu.classList.remove('open');
+  };
   if (burger && menu) {
-    const closeMenu = () => { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); burger.setAttribute('aria-label', 'Open menu'); };
     burger.addEventListener('click', () => {
-      const open = !menu.classList.contains('open');
-      menu.classList.toggle('open', open); burger.setAttribute('aria-expanded', String(open)); burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      const open = burger.getAttribute('aria-expanded') !== 'true';
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      menu.classList.toggle('open', open);
     });
-    menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
-    document.addEventListener('click', e => { if (menu.classList.contains('open') && !menu.contains(e.target) && !burger.contains(e.target)) closeMenu(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    $$('a', menu).forEach(link => link.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeMenu();
+    });
+    document.addEventListener('click', event => {
+      if (!menu.contains(event.target) && !burger.contains(event.target)) closeMenu();
+    });
   }
 
-  // Scroll reveal
-  const revealTargets = $$(' .process-card, .industry-grid article, .integration-grid > div, .quality-features article, .security-grid article, .section-heading, .voice-card, .voice-core');
-  if (!reduced && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }), { threshold: .08 });
-    revealTargets.forEach(el => { el.classList.add('reveal'); observer.observe(el); });
+  // Header scroll state and active section navigation
+  const nav = $('#nav');
+  const navLinks = $$('#menu a[href^="#"]');
+  const sections = navLinks.map(link => $(link.getAttribute('href'))).filter(Boolean);
+  const updateHeader = () => {
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 12);
+  };
+  updateHeader();
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  if ('IntersectionObserver' in window && sections.length) {
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(link => {
+          const active = link.getAttribute('href') === `#${entry.target.id}`;
+          if (active) link.classList.add('active');
+          else link.classList.remove('active');
+        });
+      });
+    }, { rootMargin: '-25% 0px -65% 0px', threshold: 0 });
+    sections.forEach(section => sectionObserver.observe(section));
   }
 
-  // Animated wave bars
-  $$('.wave').forEach(wave => {
-    wave.innerHTML = '<i></i>'.repeat(Number(wave.dataset.n) || 20);
-    [...wave.children].forEach((bar, i) => { bar.style.animationDelay = `${(i % 7) * -0.13}s`; });
+  // Logo fallback if the remote logo cannot be loaded
+  $$('img[data-logo]').forEach(img => {
+    img.addEventListener('error', () => {
+      img.hidden = true;
+      const fallback = img.parentElement?.querySelector('.logo-fallback');
+      if (fallback) fallback.hidden = false;
+    }, { once: true });
   });
 
-  // Customer journey tabs
-  const journeys = {
-    acquire: [
-      ['Lead qualification', 'Contact new leads, ask relevant questions and identify prospects ready for a sales conversation.'],
-      ['Inbound enquiries', 'Respond to product, pricing and eligibility questions using approved business information.'],
-      ['Appointment booking', 'Help customers request, confirm or reschedule appointments when calendar integration is available.'],
-      ['Campaign outreach', 'Support personalised outbound campaigns at scale, subject to consent and contact policies.']
-    ],
-    engage: [
-      ['Onboarding and KYC reminders', 'Guide customers through activation steps and required information.'],
-      ['Renewals and upsell', 'Remind customers about upcoming renewals and explain relevant upgrade options.'],
-      ['Feedback and NPS surveys', 'Collect customer feedback through a natural spoken conversation.'],
-      ['Win-back conversations', 'Reconnect with inactive customers using relevant, approved offers.']
-    ],
-    support: [
-      ['L0/L1 query resolution', 'Answer routine questions such as order status, account information and frequently asked questions.'],
-      ['Complaint registration', 'Capture issue details and create a service request when connected to the relevant system.'],
-      ['Smart routing', 'Identify conversations that need specialist attention and route them to a human team.'],
-      ['After-hours assistance', 'Provide an automated first point of contact outside regular service hours.']
-    ],
-    recover: [
-      ['Payment reminders', 'Support approved pre-due and post-due payment reminder journeys.'],
-      ['Collections conversations', 'Capture customer responses and agreed next steps within approved policies.'],
-      ['COD confirmation', 'Confirm cash-on-delivery orders before dispatch where connected to the commerce workflow.'],
-      ['Verification calls', 'Help verify delivery details or other information using approved processes.']
-    ]
-  };
-  const journeyPanel = $('#journeyPanel');
-  const renderJourney = key => {
-    if (!journeyPanel || !journeys[key]) return;
-    journeyPanel.innerHTML = journeys[key].map((item, i) => `<article class="journey-card"><span>0${i + 1}</span><h3>${item[0]}</h3><p>${item[1]}</p></article>`).join('');
-    $$('.journey-tabs .tab').forEach(btn => { const active = btn.dataset.journey === key; btn.classList.toggle('active', active); btn.setAttribute('aria-selected', String(active)); });
-  };
-  $$('.journey-tabs [data-journey]').forEach(btn => btn.addEventListener('click', () => renderJourney(btn.dataset.journey)));
-  renderJourney('acquire');
-
-  // Local browser-only demo. No API and no outbound calls.
-  const scenarios = {
-    support: { label: 'Customer support', lines: [['bot', 'Hello! You are speaking with the sample DigX Voice Bot. How can I help?'], ['user', 'I want to check my order.'], ['bot', 'Certainly. In a connected solution, I could look up your order details. This is a sample interaction.']] },
-    appointment: { label: 'Appointment booking', lines: [['bot', 'Hello! Would you like help with an appointment?'], ['user', 'I would like to book a visit.'], ['bot', 'I can help collect your preferred date and time. A live booking would require a calendar connection.']] },
-    payment: { label: 'Payment reminder', lines: [['bot', 'Hello. This is a sample payment reminder conversation.'], ['user', 'Can I make the payment tomorrow?'], ['bot', 'I can record your response in this demonstration. A live workflow would follow your approved payment process.']] },
-    lead: { label: 'Lead qualification', lines: [['bot', 'Hello! Thank you for your interest. What are you looking for today?'], ['user', 'I want to learn about voice automation.'], ['bot', 'Thank you. A connected solution could capture your requirements and arrange a follow-up.']] }
-  };
-  const tabs = $('#demoTabs'), conversation = $('#conversation'), playBtn = $('#playBtn'), stopBtn = $('#stopBtn'), wave = $('#demoWave');
-  let selected = 'support', playbackId = 0;
-  if (tabs) {
-    tabs.innerHTML = Object.entries(scenarios).map(([key, value]) => `<button type="button" class="tab ${key === selected ? 'active' : ''}" role="tab" aria-selected="${key === selected}" data-scenario="${key}">${value.label}</button>`).join('');
-    tabs.addEventListener('click', e => { const btn = e.target.closest('[data-scenario]'); if (btn) { selected = btn.dataset.scenario; stopPlayback(); updateTabs(); if (conversation) conversation.innerHTML = '<div class="conversation-empty">Press “Play sample conversation” to hear this scenario.</div>'; } });
-  }
-  const updateTabs = () => $$('#demoTabs [data-scenario]').forEach(btn => { const active = btn.dataset.scenario === selected; btn.classList.toggle('active', active); btn.setAttribute('aria-selected', String(active)); });
-  const addLine = (who, text) => {
-    const row = document.createElement('div'); row.className = `chat-line ${who}`;
-    const label = document.createElement('small'); label.textContent = who === 'bot' ? 'DIGX VOICE BOT · SAMPLE' : 'CUSTOMER · SAMPLE';
-    const bubble = document.createElement('p'); bubble.textContent = text;
-    row.append(label, bubble); conversation.appendChild(row); conversation.scrollTop = conversation.scrollHeight;
-  };
-  const speak = text => new Promise(resolve => {
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) { window.setTimeout(resolve, Math.min(2200, 450 + text.length * 24)); return; }
-    const utterance = new SpeechSynthesisUtterance(text); utterance.rate = 0.96; utterance.pitch = 1.02;
-    utterance.onend = resolve; utterance.onerror = resolve; window.speechSynthesis.speak(utterance);
-  });
-  function stopPlayback() { playbackId++; if ('speechSynthesis' in window) window.speechSynthesis.cancel(); if (wave) wave.classList.remove('playing'); if (playBtn) playBtn.disabled = false; }
-  if (playBtn) playBtn.addEventListener('click', async () => {
-    stopPlayback(); const thisRun = ++playbackId; if (conversation) conversation.innerHTML = '';
-    if (wave) wave.classList.add('playing'); playBtn.disabled = true;
-    for (const [who, text] of scenarios[selected].lines) {
-      if (thisRun !== playbackId) return;
-      addLine(who, text); if (who === 'bot') await speak(text); else await new Promise(resolve => window.setTimeout(resolve, 450));
-    }
-    if (thisRun === playbackId) { if (wave) wave.classList.remove('playing'); playBtn.disabled = false; }
-  });
-  if (stopBtn) stopBtn.addEventListener('click', stopPlayback);
-  window.addEventListener('pagehide', stopPlayback);
-})();
-/* DigX Voice Bot — ICCS motion add-on. Load AFTER digx-bot.js (both with defer).
-   Additive only: no existing listener, ID or form behaviour is touched. */
-   (() => {
-    'use strict';
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const nav = document.getElementById('nav');
-  
-    // Sticky header: compact + shadow after scrolling
-    if (nav) {
-      const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    }
-  
-    // Active nav link for the section in view
-    const links = [...document.querySelectorAll('#menu a[href^="#"]')];
-    if ('IntersectionObserver' in window && links.length) {
-      const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
-      const spy = new IntersectionObserver(entries => entries.forEach(e => {
-        const link = map.get(e.target.id);
-        if (!link || !e.isIntersecting) return;
-        links.forEach(a => { a.classList.remove('active'); a.removeAttribute('aria-current'); });
-        link.classList.add('active'); link.setAttribute('aria-current', 'true');
-      }), { rootMargin: '-40% 0px -55% 0px' });
-      map.forEach((_, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
-    }
-  
-    // Stagger sibling reveals (uses the .reveal elements created by digx-bot.js)
-    if (!reduced) {
-      const seen = new Map();
-      document.querySelectorAll('.reveal').forEach(el => {
-        const n = seen.get(el.parentElement) || 0;
-        seen.set(el.parentElement, n + 1);
-        if (n) {
-          el.style.transitionDelay = Math.min(n * 70, 350) + 'ms';
-          el.addEventListener('transitionend', () => { el.style.transitionDelay = ''; }, { once: true });
+  // Subtle reveal effect, with a no-observer fallback that leaves content visible
+  const revealTargets = $$('.section-heading, .journey-card, .process-card, .industry-grid article, .integration-grid > div, .security-grid article, .quality-features article, .faq-list details');
+  if ('IntersectionObserver' in window) {
+    revealTargets.forEach(element => element.classList.add('reveal'));
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
         }
       });
+    }, { threshold: 0.12 });
+    revealTargets.forEach(element => revealObserver.observe(element));
+  }
+
+  // Customer journey tabs
+  const journeyContent = {
+    acquire: {
+      title: 'Acquire new customers',
+      intro: 'Start useful conversations with prospective customers and help them take the next step.',
+      cards: [
+        ['Lead qualification', 'Ask relevant questions, understand customer needs and identify qualified leads.'],
+        ['Enquiry handling', 'Answer common product and service questions with approved information.'],
+        ['Appointment booking', 'Help customers request a callback, consultation or appointment.']
+      ]
+    },
+    engage: {
+      title: 'Engage every customer',
+      intro: 'Keep customers informed with timely, helpful conversations across their journey.',
+      cards: [
+        ['Welcome journeys', 'Introduce services and guide customers through their first steps.'],
+        ['Reminders and updates', 'Share relevant reminders and status updates through configured workflows.'],
+        ['Feedback collection', 'Gather customer feedback and route important responses for review.']
+      ]
+    },
+    support: {
+      title: 'Support customers faster',
+      intro: 'Make common support journeys easier while keeping a path open to human assistance.',
+      cards: [
+        ['Frequently asked questions', 'Respond to common questions using approved knowledge.'],
+        ['Service requests', 'Capture request details and pass them to the appropriate support workflow.'],
+        ['Human escalation', 'Identify conversations that need a person and support a handoff where configured.']
+      ]
+    },
+    recover: {
+      title: 'Recover and reconnect',
+      intro: 'Use thoughtful follow-ups to help resolve pending actions and reconnect with customers.',
+      cards: [
+        ['Payment reminders', 'Remind customers about pending payments using approved scripts and timing.'],
+        ['Renewal outreach', 'Support renewal reminders and capture a customer’s response.'],
+        ['Service recovery', 'Collect concerns and direct unresolved issues to the right team.']
+      ]
     }
-  })();
+  };
+  const journeyPanel = $('#journeyPanel');
+  const journeyTabs = $$('[data-journey]');
+  const renderJourney = key => {
+    if (!journeyPanel || !journeyContent[key]) return;
+    const data = journeyContent[key];
+    journeyPanel.replaceChildren();
+    const heading = document.createElement('div');
+    heading.className = 'journey-panel-heading';
+    const h3 = document.createElement('h3');
+    h3.textContent = data.title;
+    const p = document.createElement('p');
+    p.textContent = data.intro;
+    heading.append(h3, p);
+    const grid = document.createElement('div');
+    grid.className = 'journey-grid';
+    data.cards.forEach(([title, description], index) => {
+      const article = document.createElement('article');
+      article.className = 'journey-card';
+      const number = document.createElement('span');
+      number.className = 'journey-number';
+      number.textContent = `0${index + 1}`;
+      const cardTitle = document.createElement('h3');
+      cardTitle.textContent = title;
+      const cardText = document.createElement('p');
+      cardText.textContent = description;
+      article.append(number, cardTitle, cardText);
+      grid.append(article);
+    });
+    journeyPanel.append(heading, grid);
+  };
+  journeyTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const key = tab.dataset.journey;
+      journeyTabs.forEach(item => {
+        const active = item === tab;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
+      renderJourney(key);
+    });
+  });
+  if (journeyTabs.length) renderJourney(journeyTabs.find(tab => tab.classList.contains('active'))?.dataset.journey || 'acquire');
+
+  // Sample conversations use the browser's built-in speech synthesis (not a real call).
+  const scenarios = [
+    {
+      label: 'Order status',
+      lines: [
+        ['DigX Voice Bot', 'Hello! I am the automated assistant. How can I help you today?'],
+        ['Customer', 'I would like to check the status of my order.'],
+        ['DigX Voice Bot', 'Certainly. I can help with that. May I have your order reference?'],
+        ['Customer', 'It is order one two three four.'],
+        ['DigX Voice Bot', 'Thank you. In a connected deployment, I would check the order system and share the latest status.']
+      ]
+    },
+    {
+      label: 'Appointment',
+      lines: [
+        ['DigX Voice Bot', 'Welcome to the appointment desk. How may I assist you?'],
+        ['Customer', 'I want to book an appointment.'],
+        ['DigX Voice Bot', 'I can help capture your preferred date and time. Which day works best for you?'],
+        ['Customer', 'Friday afternoon.'],
+        ['DigX Voice Bot', 'Thank you. A connected scheduling system can check availability and confirm the appointment.']
+      ]
+    },
+    {
+      label: 'Payment reminder',
+      lines: [
+        ['DigX Voice Bot', 'Hello. This is an automated reminder. Is now a good time to talk?'],
+        ['Customer', 'Yes, please go ahead.'],
+        ['DigX Voice Bot', 'This is a reminder about a pending payment. Please use only the official payment channel shared by your provider.'],
+        ['Customer', 'Can I speak to someone?'],
+        ['DigX Voice Bot', 'Of course. A configured workflow can connect you to the support team.']
+      ]
+    }
+  ];
+  const demoTabs = $('#demoTabs');
+  const conversation = $('#conversation');
+  const playBtn = $('#playBtn');
+  const stopBtn = $('#stopBtn');
+  let activeScenario = 0;
+  let utteranceQueue = [];
+  const stopSpeech = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    utteranceQueue = [];
+    if (playBtn) playBtn.disabled = false;
+  };
+  const renderConversation = scenario => {
+    if (!conversation) return;
+    conversation.replaceChildren();
+    scenario.lines.forEach(([speaker, words]) => {
+      const line = document.createElement('div');
+      line.className = `chat-line ${speaker === 'Customer' ? 'user' : ''}`.trim();
+      const name = document.createElement('small');
+      name.textContent = speaker.toUpperCase();
+      const message = document.createElement('p');
+      message.textContent = words;
+      line.append(name, message);
+      conversation.append(line);
+    });
+  };
+  if (demoTabs) {
+    scenarios.forEach((scenario, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `tab${index === 0 ? ' active' : ''}`;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', String(index === 0));
+      button.textContent = scenario.label;
+      button.addEventListener('click', () => {
+        stopSpeech();
+        activeScenario = index;
+        $$('.tab', demoTabs).forEach((tab, tabIndex) => {
+          tab.classList.toggle('active', tabIndex === index);
+          tab.setAttribute('aria-selected', String(tabIndex === index));
+        });
+        if (conversation) conversation.innerHTML = '<div class="conversation-empty">Press “Play sample conversation” to hear this scenario.</div>';
+      });
+      demoTabs.append(button);
+    });
+  }
+  if (playBtn) {
+    playBtn.addEventListener('click', () => {
+      stopSpeech();
+      const scenario = scenarios[activeScenario];
+      renderConversation(scenario);
+      if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        if (conversation) {
+          const note = document.createElement('p');
+          note.className = 'fineprint';
+          note.textContent = 'Speech playback is not available in this browser. The sample transcript is shown above.';
+          conversation.append(note);
+        }
+        return;
+      }
+      playBtn.disabled = true;
+      utteranceQueue = scenario.lines.map(([speaker, words]) => {
+        const utterance = new SpeechSynthesisUtterance(`${speaker}: ${words}`);
+        utterance.lang = 'en-IN';
+        utterance.rate = 0.96;
+        utterance.onend = () => {
+          if (utteranceQueue[0] === utterance) utteranceQueue.shift();
+          if (!utteranceQueue.length && playBtn) playBtn.disabled = false;
+        };
+        utterance.onerror = () => { stopSpeech(); };
+        return utterance;
+      });
+      utteranceQueue.forEach(utterance => window.speechSynthesis.speak(utterance));
+    });
+  }
+  if (stopBtn) stopBtn.addEventListener('click', stopSpeech);
+  window.addEventListener('beforeunload', stopSpeech);
+})();
+
+/*
+ * DigX Voice Bot — browser-only demo request form.
+ * No API, backend, Node.js, database, or real phone call is used.
+ * The daily limit is a convenience restriction in this browser only.
+ */
+(() => {
+  'use strict';
+
+  const form = document.getElementById('callRequestForm');
+  if (!form) return;
+
+  const country = document.getElementById('countryCode');
+  const phone = document.getElementById('phoneNumber');
+  const consent = document.getElementById('callConsent');
+  const button = document.getElementById('callSubmit');
+  const buttonText = button?.querySelector('.call-button-text');
+  const feedback = document.getElementById('callFeedback');
+  if (!country || !phone || !consent || !button || !feedback) return;
+
+  const LIMIT = 2;
+  const STORAGE_KEY = 'digx_frontend_demo_requests_v1';
+  const originalButtonText = buttonText?.textContent || 'Save Demo Request';
+  let submitting = false;
+
+  const todayInIndia = () => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  };
+
+  // This is a local lookup key, not a security feature or encryption.
+  const numberKey = value => {
+    let hash = 2166136261;
+    for (let i = 0; i < value.length; i += 1) {
+      hash ^= value.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(16);
+  };
+
+  const readUsage = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      if (saved && saved.date === todayInIndia() && saved.numbers && typeof saved.numbers === 'object') return saved;
+    } catch (_) { /* Storage can be disabled or unavailable. */ }
+    return { date: todayInIndia(), numbers: {} };
+  };
+
+  const saveUsage = usage => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const cleanIndianMobile = raw => {
+    let digits = String(raw || '').replace(/\D/g, '');
+    if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
+    if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1);
+    return /^[6-9]\d{9}$/.test(digits) ? digits : null;
+  };
+
+  const show = (message, type = '') => {
+    feedback.textContent = message;
+    feedback.className = `call-feedback ${type}`.trim();
+    if (type) feedback.dataset.state = type;
+    else delete feedback.dataset.state;
+  };
+
+  const setInvalid = (element, invalid) => {
+    if (invalid) element.setAttribute('aria-invalid', 'true');
+    else element.removeAttribute('aria-invalid');
+  };
+
+  const setBusy = busy => {
+    submitting = busy;
+    button.disabled = busy;
+    button.classList.toggle('loading', busy);
+    if (busy) button.setAttribute('aria-busy', 'true');
+    else button.removeAttribute('aria-busy');
+    if (buttonText) buttonText.textContent = busy ? 'Saving request…' : originalButtonText;
+  };
+
+  const currentCount = fullNumber => {
+    const usage = readUsage();
+    return Number(usage.numbers[numberKey(fullNumber)] || 0);
+  };
+
+  phone.addEventListener('input', () => {
+    phone.value = phone.value.replace(/[^\d\s+().-]/g, '');
+    setInvalid(phone, false);
+    if (feedback.dataset.state === 'error') show('');
+  });
+
+  country.addEventListener('change', () => {
+    setInvalid(country, country.value !== '+91');
+    if (country.value !== '+91') show('This demo request form currently accepts Indian mobile numbers only (+91).', 'error');
+    else show('');
+  });
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    if (submitting) return;
+    setInvalid(country, false);
+    setInvalid(phone, false);
+
+    if (country.value !== '+91') {
+      setInvalid(country, true);
+      show('Please select India (+91).', 'error');
+      country.focus();
+      return;
+    }
+
+    const mobile = cleanIndianMobile(phone.value);
+    if (!mobile) {
+      setInvalid(phone, true);
+      show('Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.', 'error');
+      phone.focus();
+      return;
+    }
+
+    if (!consent.checked) {
+      show('Please provide consent before saving your demo request.', 'error');
+      consent.focus();
+      return;
+    }
+
+    const fullNumber = `+91${mobile}`;
+    const key = numberKey(fullNumber);
+    const usage = readUsage();
+    const used = Number(usage.numbers[key] || 0);
+    if (used >= LIMIT) {
+      setInvalid(phone, true);
+      show('This browser has already saved 2 demo requests for this number today. Please try again after midnight India time.', 'error');
+      return;
+    }
+
+    setBusy(true);
+    usage.numbers[key] = used + 1;
+    const saved = saveUsage(usage);
+    setBusy(false);
+
+    if (!saved) {
+      show('Your browser could not save this request. Please enable site storage and try again. No phone call was placed.', 'error');
+      return;
+    }
+
+    const remaining = LIMIT - usage.numbers[key];
+    show(`Your demo request was recorded in this browser. ${remaining} request${remaining === 1 ? '' : 's'} remaining for this number today. No phone call was placed because no calling service is connected.`, 'success');
+    phone.value = '';
+    consent.checked = false;
+  });
+})();

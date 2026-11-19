@@ -15,8 +15,9 @@
   <meta name="theme-color" content="#faf9f7">
   <link rel="stylesheet" href="digx-bot.css">
   <script src="digx-bot.js" defer></script>
+  <script src="digx-call.js" defer></script>
 </head>
-<body>
+<body class="dgx">
   <a class="skip" href="#main">Skip to content</a>
   <header class="nav" id="nav">
     <a class="logo" href="#home" aria-label="ICCS DigX Voice Bot home">
@@ -25,8 +26,8 @@
     </a>
     <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
     <nav id="menu" aria-label="Main navigation">
-      <a href="#journey">Use cases</a><a href="#how">How it works</a><a href="#industries">Industries</a><a href="#quality">Quality</a><a href="#demo">Live demo</a>
-      <a class="btn btn-sm" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Book a demo</a>
+      <a href="#journey">Use cases</a><a href="#how">How it works</a><a href="#industries">Industries</a><a href="#quality">Quality</a><a href="#demo">Sample call</a>
+      <a class="btn btn-sm" href="#live-demo-call">Get a demo call</a>
     </nav>
   </header>
 
@@ -36,7 +37,7 @@
         <p class="eyebrow"><span class="dot"></span> DigX Voice Bot · Part of the DigX Verse</p>
         <h1>Every Call Answered. Every Customer Heard. <span>The Voice of Smarter CX.</span></h1>
         <p class="lede">DigX Voice Bot is an AI voice agent designed to answer, call, qualify, collect and resolve around the clock, in your customers' language. Built by ICCS, with deep customer conversation and contact-centre experience.</p>
-        <div class="hero-actions"><a class="btn" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Book A Demo</a><a class="btn btn-ghost" href="#demo">Hear It Live <span aria-hidden="true">▶</span></a></div>
+        <div class="hero-actions"><a class="btn" href="#live-demo-call">Get A Demo Call</a><a class="btn btn-ghost" href="#demo">Hear A Sample <span aria-hidden="true">▶</span></a></div>
         <div class="hero-chips"><span>24/7 conversations</span><span>Human + AI approach</span><span>Designed for Indian languages</span></div>
       </div>
       <div class="hero-visual" aria-label="Illustration of a voice conversation">
@@ -58,7 +59,7 @@
 
     <p>
       Enter your phone number and let DigX Voice Bot call you
-      for a personalised demo.
+      for a personalised demo. This frontend-only preview records a request in this browser; it does not place a call. Currently available for Indian mobile numbers (+91).
     </p>
 
     <form class="call-form" id="callRequestForm" novalidate>
@@ -67,11 +68,6 @@
         <label class="sr-only" for="countryCode">Country code</label>
         <select id="countryCode" name="country_code">
           <option value="+91" selected>+91 · IN</option>
-          <option value="+1">+1 · US</option>
-          <option value="+44">+44 · GB</option>
-          <option value="+971">+971 · AE</option>
-          <option value="+65">+65 · SG</option>
-          <option value="+61">+61 · AU</option>
         </select>
 
         <label class="sr-only" for="phoneNumber">Phone number</label>
@@ -88,7 +84,7 @@
 
         <button class="call-submit" id="callSubmit" type="submit">
           <span class="call-icon">☎</span>
-          <span class="call-button-text">Call Me for a Demo</span>
+          <span class="call-button-text">Save Demo Request</span>
         </button>
 
       </div>
@@ -100,9 +96,7 @@
 
       <p class="call-feedback" id="callFeedback" aria-live="polite"></p>
 
-      <p class="call-privacy">
-        Your number will be used to process your demo-call request.
-      </p>
+      <p class="call-privacy">This browser-only preview saves up to 2 demo requests per number per day. It does not place a phone call or send your number to ICCS.</p>
     </form>
 
   </div>
@@ -111,7 +105,7 @@
     <section class="trust section" aria-label="Industries served">
       <p class="eyebrow">CX experience across industries</p><h2>Loved by brands that put customers first</h2>
       <div class="industry-rail"><span>BFSI</span><span>Healthcare</span><span>E-commerce</span><span>Telecom</span><span>Automotive</span></div>
-      <p class="muted center">Backed by 20+ years of ICCS contact-centre expertise and [6,000+] CX professionals.</p>
+      <p class="muted center">Backed by 20+ years of ICCS contact-centre expertise.</p>
     </section>
 
     <section class="section section-tint" id="journey">
@@ -144,7 +138,7 @@
       <div class="section-heading"><p class="eyebrow">Language is connection</p><h2>Fluent in India. Ready for the World.</h2><p>Your customers don&#39;t speak in one language, and neither does DigX Voice Bot. It switches
         naturally between English, Hindi and regional languages, even in the middle of a sentence.</p></div>
       <div class="language-cloud"><span>English</span><span>Hindi</span><span>Hinglish</span><span>Tamil</span><span>Telugu</span><span>Kannada</span><span>Malayalam</span><span>Marathi</span><span>Bengali</span><span>Gujarati</span><span>Punjabi</span><span class="more-language">More languages</span></div>
-      <p class="fineprint center">Choose from [X] voices, or create a custom brand voice that sounds like you.</p>
+      <p class="fineprint center">Voice options depend on your configuration. Ask ICCS about custom brand voices.</p>
     </section>
 
     <section class="section section-tint" id="quality">
@@ -174,7 +168,7 @@
     </section>
 
     <section class="section section-tint" id="demo">
-      <div class="section-heading"><p class="eyebrow">Experience a sample conversation</p><h2>Smarter Business and Better CX Starts Here.</h2><p>Let&#39;s turn every customer conversation into an outcome. Hear what DigX Voice Bot can do for
+      <div class="section-heading"><p class="eyebrow">Sample conversation · no phone number needed</p><h2>Hear a Sample Conversation.</h2><p>Let&#39;s turn every customer conversation into an outcome. Hear what DigX Voice Bot can do for
         your business.</p></div>
       <div class="demo-wrap"><div class="demo-controls"><div class="demo-label">CHOOSE A SAMPLE</div><div class="tabs demo-tabs" id="demoTabs" role="tablist" aria-label="Demo scenario"></div><div class="wave" id="demoWave" data-n="30"></div><div class="demo-actions"><button class="btn" id="playBtn" type="button">Play sample conversation</button><button class="btn btn-ghost" id="stopBtn" type="button">Stop</button></div><p class="fineprint">Audio uses your browser's speech synthesis when available.</p></div><div class="conversation" id="conversation" aria-live="polite"><div class="conversation-empty">Choose a scenario and play the sample conversation.</div></div></div>
     </section>
@@ -192,15 +186,13 @@
       </div>
     </section>
 
-    <section class="closing-cta" id="contact"><p class="eyebrow light">Start a smarter conversation</p><h2>Smarter Business and Better CX Starts Here.</h2><p>Let's explore how DigX Voice Bot can turn customer conversations into meaningful outcomes.</p><div class="hero-actions"><a class="btn btn-white" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Book A Demo</a><a class="btn btn-outline-white" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Connect With Us</a></div></section>
+    <section class="closing-cta" id="contact"><p class="eyebrow light">Start a smarter conversation</p><h2>Smarter Business and Better CX Starts Here.</h2><p>Let's explore how DigX Voice Bot can turn customer conversations into meaningful outcomes.</p><div class="hero-actions"><a class="btn btn-white" href="#live-demo-call">Get A Demo Call</a><a class="btn btn-outline-white" href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Connect With Us</a></div></section>
   </main>
 
   
-  <footer class="footer"><div class="footer-brand"><a class="logo" href="#home"><img src="https://iccsdigx.com/logo.png" alt="ICCS" width="118" height="34" data-logo><span class="logo-fallback" hidden>ICCS</span><small>DigX Voice Bot</small></a><p>AI-powered customer experience innovation from ICCS DigX.</p></div><div><h3>Explore</h3><a href="#journey">Use cases</a><a href="#how">How it works</a><a href="#industries">Industries</a><a href="#demo">Try the demo</a></div><div><h3>ICCS</h3><a href="https://iccsdigx.com/about-us" target="_blank" rel="noopener">About us</a><a href="https://iccsdigx.com/tech-and-innovation" target="_blank" rel="noopener">Tech & Innovation</a><a href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Contact us</a></div><div><h3>Legal</h3><a href="https://iccsdigx.com/privacy-policy" target="_blank" rel="noopener">Privacy policy</a><a href="https://iccsdigx.com/legal-statement" target="_blank" rel="noopener">Legal statement</a></div><p class="copyright">© 2026 ICCS. All rights reserved.</p></footer>
+  <footer class="footer"><div class="footer-brand"><a class="logo" href="#home"><img src="https://iccsdigx.com/logo.png" alt="ICCS" width="118" height="34" data-logo><span class="logo-fallback" hidden>ICCS</span><small>DigX Voice Bot</small></a><p>AI-powered customer experience innovation from ICCS DigX.</p></div><div><h3>Explore</h3><a href="#journey">Use cases</a><a href="#how">How it works</a><a href="#industries">Industries</a><a href="#demo">Hear a sample</a></div><div><h3>ICCS</h3><a href="https://iccsdigx.com/about-us" target="_blank" rel="noopener">About us</a><a href="https://iccsdigx.com/tech-and-innovation" target="_blank" rel="noopener">Tech & Innovation</a><a href="https://iccsdigx.com/contact-us" target="_blank" rel="noopener">Contact us</a></div><div><h3>Legal</h3><a href="https://iccsdigx.com/privacy-policy" target="_blank" rel="noopener">Privacy policy</a><a href="https://iccsdigx.com/legal-statement" target="_blank" rel="noopener">Legal statement</a></div><p class="copyright">© 2026 ICCS. All rights reserved.</p></footer>
 
-  <link rel="stylesheet" href="digx-bot.css">
-  <link rel="stylesheet" href="digx-bot-iccs.css">   <!-- add, after digx-bot.css -->
-  <script src="digx-bot.js" defer></script>
-  <body class="dgx">                                 <!-- add class -->
+ 
+ 
 </body>
 </html>
