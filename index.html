@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#faf9f7">
   <link rel="stylesheet" href="digx-bot.css">
   <script src="digx-bot.js" defer></script>
-  <script src="digx-call.js" defer></script>
+  
 </head>
 <body class="dgx">
   <a class="skip" href="#main">Skip to content</a>
@@ -57,17 +57,19 @@
 
     <h2>Want to Hear Our Voice Bot in Action?</h2>
 
-    <p>
-      Enter your phone number and let DigX Voice Bot call you
-      for a personalised demo. This frontend-only preview records a request in this browser; it does not place a call. Currently available for Indian mobile numbers (+91).
-    </p>
+    
 
     <form class="call-form" id="callRequestForm" novalidate>
       <div class="call-form-main">
 
         <label class="sr-only" for="countryCode">Country code</label>
-        <select id="countryCode" name="country_code">
+        <select id="countryCode" name="country_code" aria-label="Country code">
           <option value="+91" selected>+91 · IN</option>
+          <option value="+1" disabled>+1 · US / CA</option>
+          <option value="+44" disabled>+44 · UK</option>
+          <option value="+61" disabled>+61 · AU</option>
+          <option value="+971" disabled>+971 · UAE</option>
+          <option value="+65" disabled>+65 · SG</option>
         </select>
 
         <label class="sr-only" for="phoneNumber">Phone number</label>
@@ -84,19 +86,19 @@
 
         <button class="call-submit" id="callSubmit" type="submit">
           <span class="call-icon">☎</span>
-          <span class="call-button-text">Save Demo Request</span>
+          <span class="call-button-text">Try Our Agent</span>
         </button>
 
       </div>
 
       <label class="call-consent" for="callConsent">
-        <input id="callConsent" name="consent" type="checkbox" required>
+        <input id="callConsent" name="consent" type="checkbox" checked required>
         <span>I agree to receive an automated demo call from ICCS DigX.</span>
       </label>
 
       <p class="call-feedback" id="callFeedback" aria-live="polite"></p>
 
-      <p class="call-privacy">This browser-only preview saves up to 2 demo requests per number per day. It does not place a phone call or send your number to ICCS.</p>
+      <p class="call-privacy"></p>
     </form>
 
   </div>
