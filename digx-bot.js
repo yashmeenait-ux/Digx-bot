@@ -984,18 +984,21 @@ form.addEventListener('submit', event => {
       return;
     }
 
+  
     // Validate mobile number
-    const mobile = cleanIndianMobile(phone.value);
+const mobile = cleanIndianMobile(phone.value);
 
-    if (!mobile) {
-      setInvalid(phone, true);
-      show(
-        'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.',
-        'error'
-      );
-      phone.focus();
-      return;
-    }
+if (!mobile) {
+  setInvalid(phone, true);
+
+  show(
+    'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.',
+    'error'
+  );
+
+  phone.focus();
+  return;
+}
 
     // Validate consent
     if (!consent.checked) {
