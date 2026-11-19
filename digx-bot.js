@@ -781,21 +781,28 @@
   };
 
   // =====================================
-  // 19. SHOW FEEDBACK MESSAGE
-  // =====================================
+// 19. SHOW TEMPORARY POPUP MESSAGE
+// =====================================
 
-  const show = (message, type = '') => {
-    feedback.textContent = message;
+const showPopup = message => {
+  let popup = document.getElementById('thankYouPopup');
 
-    feedback.className =
-      `call-feedback ${type}`.trim();
+  if (!popup) {
+    popup = document.createElement('div');
+    popup.id = 'thankYouPopup';
+    popup.className = 'thank-you-popup';
+    document.body.appendChild(popup);
+  }
 
-    if (type) {
-      feedback.dataset.state = type;
-    } else {
-      delete feedback.dataset.state;
-    }
-  };
+  popup.textContent = message;
+  popup.classList.add('show');
+
+  clearTimeout(popup.hideTimer);
+
+  popup.hideTimer = setTimeout(() => {
+    popup.classList.remove('show');
+  }, 3500);
+};
 
   // =====================================
   // 20. FIELD VALIDATION STYLE
@@ -838,18 +845,16 @@
   // =====================================
 
   phone.addEventListener('input', () => {
-    phone.value = phone.value.replace(
-      /[^\d\s+().-]/g,
-      ''
-    );
-
-    setInvalid(phone, false);
-
-    if (feedback.dataset.state === 'error') {
-      show('');
+    // Allow digits only and maximum 10 digits
+    phone.value = phone.value.replace(/\D/g, '').slice(0, 10);
+  
+    // First digit cannot be 0
+    if (phone.value.startsWith('0')) {
+      phone.value = phone.value.slice(1);
     }
+  
+    setInvalid(phone, false);
   });
-
   // =====================================
   // 23. COUNTRY CODE EVENT
   // =====================================
@@ -873,6 +878,96 @@
   // 24. FORM SUBMISSION
   // =====================================
 
+ // =====================================
+// 24. FORM SUBMISSION
+// =====================================
+
+form.addEventListener('submit', event => {
+  event.preventDefault();
+
+  if (submitting) return;
+
+  setInvalid(country, false);
+  setInvalid(phone, false);
+
+  // Validate country code
+
+  if (country.value !== '+91') {
+    setInvalid(country, true);
+    show('Please select India (+91).', 'error');
+    country.focus();
+    return;
+  }
+
+  // Validate mobile number
+
+  const mobile = cleanIndianMobile(phone.value);
+
+  if (!mobile) {
+    setInvalid(phone, true);
+
+    show(
+      'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.',
+      'error'
+    );
+
+    phone.focus();
+    return;
+  }
+
+  // Validate consent
+
+  if (!consent.checked) {
+    show('Please provide consent before continuing.', 'error');
+    consent.focus();
+    return;
+  }
+
+  // Prepare number and usage record
+
+  const fullNumber = `+91${mobile}`;
+  const key = numberKey(fullNumber);
+  const usage = readUsage();
+
+  const used = Number(usage.numbers[key] || 0);
+
+  // Third request: show temporary message
+
+  if (used >= LIMIT) {
+    showPopup('Please try again tomorrow.');
+    return;
+  }
+
+  // Save request count
+
+  setBusy(true);
+
+  usage.numbers[key] = used + 1;
+
+  const saved = saveUsage(usage);
+
+  setBusy(false);
+
+  if (!saved) {
+    show(
+      'Unable to save your request. Please try again.',
+      'error'
+    );
+    return;
+  }
+
+  // First and second requests: success popup
+
+  showPopup('Demo request submitted successfully.');
+
+  phone.value = '';
+  setInvalid(phone, false);
+});
+    
+  // =====================================
+  // 24. FORM SUBMISSION
+  // =====================================
+
   form.addEventListener('submit', event => {
     event.preventDefault();
 
@@ -882,111 +977,64 @@
     setInvalid(phone, false);
 
     // Validate country code
-
     if (country.value !== '+91') {
       setInvalid(country, true);
-
       show('Please select India (+91).', 'error');
-
       country.focus();
-
       return;
     }
 
     // Validate mobile number
-
     const mobile = cleanIndianMobile(phone.value);
 
     if (!mobile) {
       setInvalid(phone, true);
-
       show(
         'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.',
         'error'
       );
-
       phone.focus();
-
       return;
     }
 
     // Validate consent
-
     if (!consent.checked) {
-      show(
-        'Please provide consent before continuing.',
-        'error'
-      );
-
+      show('Please provide consent before continuing.', 'error');
       consent.focus();
-
       return;
     }
 
-    // Prepare number and usage record
-
+    // Get request usage
     const fullNumber = `+91${mobile}`;
-
     const key = numberKey(fullNumber);
-
     const usage = readUsage();
 
     const used = Number(usage.numbers[key] || 0);
 
-    // Check daily limit
-
-    if (
-      !Number.isInteger(used) ||
-      used < 0
-    ) {
-      usage.numbers[key] = 0;
-    }
-
-    const currentUsed = Number(usage.numbers[key] || 0);
-
-    if (currentUsed >= LIMIT) {
-      setInvalid(phone, true);
-
-      show(
-        'This browser has already reached 2 demo requests for this number today. Please try again after midnight India time.',
-        'error'
-      );
-
+    // Third request and onwards
+    if (used >= LIMIT) {
+      showPopup('Please try again tomorrow.');
       return;
     }
 
     // Save request count
-
     setBusy(true);
 
-    usage.numbers[key] = currentUsed + 1;
+    usage.numbers[key] = used + 1;
 
     const saved = saveUsage(usage);
 
     setBusy(false);
 
     if (!saved) {
-      show(
-        'Your browser could not save this request. Please enable site storage and try again. No phone call was placed.',
-        'error'
-      );
-
+      show('Unable to save your request. Please try again.', 'error');
       return;
     }
 
-    // Success message
-
-    const remaining = LIMIT - usage.numbers[key];
-
-    show(
-      `Demo request limit updated in this browser. ${remaining} request${remaining === 1 ? '' : 's'} remaining for this number today. No actual request was sent and no phone call was placed.`,
-      'success'
-    );
-
-    // Clear phone number but preserve consent checkbox
+    // First and second requests
+    showPopup('Demo request submitted successfully.');
 
     phone.value = '';
-
     setInvalid(phone, false);
   });
 

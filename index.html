@@ -74,15 +74,15 @@
 
         <label class="sr-only" for="phoneNumber">Phone number</label>
         <input
-          id="phoneNumber"
-          name="phone_number"
-          type="tel"
-          inputmode="tel"
-          autocomplete="tel-national"
-          placeholder="Enter your phone number"
-          maxlength="18"
-          required
-        >
+        type="tel"
+        id="phoneNumber"
+        name="phone"
+        placeholder="Enter 10-digit mobile number"
+        inputmode="numeric"
+        maxlength="10"
+        pattern="[1-9][0-9]{9}"
+        required
+      >
 
         <button class="call-submit" id="callSubmit" type="submit">
           <span class="call-icon">☎</span>
